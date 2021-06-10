@@ -34,13 +34,49 @@ long rfind(const pystring *self, const char *sub_str)
     return max_index;
 }
 
-pystring* pys_create(char *str)
+struct pystring* insert(const pystring *self, unsigned long index, const char *sub_str)
+{
+    char *result_str = calloc((self->size + strlen(sub_str) + 1), sizeof(char));
+
+    if (result_str == NULL) {
+        return NULL;
+    }
+
+    strncat(result_str, self->cstring, index);
+    strcat(result_str, sub_str);
+    strcat(result_str, &self->cstring[index]);
+
+    return pyscreate(result_str);
+}
+
+/* TODO: after insert and remove implementation.
+pystring* replace(const struct pystring *self, const char *old, const char *new, unsigned int count)
+{
+    char *template = malloc(sizeof(char) * (self->size + 1));
+    strcpy(template, self->cstring);
+
+    for (;;) {
+
+
+
+        break;
+    }
+
+
+    return NULL;
+}
+*/
+
+pystring* pyscreate(char *str)
 {
     pystring *new_string = malloc(sizeof(pystring));
-    new_string->cstring = str;
-    new_string->size = strlen(str);
-    new_string->find = find;
-    new_string->rfind = rfind;
+    if (new_string != NULL) {
+        new_string->cstring = str;
+        new_string->size = strlen(str);
+        new_string->find = find;
+        new_string->rfind = rfind;
+        new_string->insert = insert;
+    }
 
     return new_string;
 }
